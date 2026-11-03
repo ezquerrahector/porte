@@ -19,7 +19,7 @@ export default function Orders() {
 
   return (
     <main className="screen stack">
-      <Link to="/vitrina" className="back">← Vitrina</Link>
+      <Link to="/bazar" className="back">← Bazar</Link>
       <h1 className="h1">Mis pedidos</h1>
       <div className="chips">
         <button className={`chip ${tab === 'compras' ? 'on' : ''}`} onClick={() => setTab('compras')}>Lo que compré</button>

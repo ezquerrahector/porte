@@ -113,7 +113,7 @@ export default function GarmentForm() {
         <button className="btn" disabled={busy}>{busy ? 'Guardando…' : 'Guardar'}</button>
         {id && g.status === 'activa' && (
           <>
-            <Link to={`/vitrina/vender/${id}`} className="btn ghost">Poner en venta</Link>
+            <Link to={`/bazar/vender/${id}`} className="btn ghost">Poner en venta</Link>
             <button type="button" className="link muted" onClick={archive}>Quitar de mi clóset</button>
           </>
         )}
