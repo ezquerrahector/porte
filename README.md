@@ -13,7 +13,7 @@ Web app instalable (PWA) de Porte, piloto en León, Gto. Fase 1:
 
 ## Tecnología
 
-React + Vite + vite-plugin-pwa · Supabase (Postgres con RLS, Auth, Storage) · GitHub Pages vía GitHub Actions.
+React + Vite + vite-plugin-pwa · Supabase (Postgres con RLS, Auth, Storage) · Vercel (publicación automática desde `main`).
 
 ## Producción
 
@@ -22,5 +22,5 @@ Cada push a `main` publica automáticamente. Las migraciones de base de datos es
 ```bash
 npm install
 npm run dev     # local
-npm run build   # build de producción (BASE_PATH=/porte/ para GitHub Pages)
+npm run build   # build de producción
 ```
