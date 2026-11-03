@@ -1,7 +1,8 @@
-name: Publicar en GitHub Pages (manual, en desuso)
+name: Publicar en producción
 
-# Producción se publica en Vercel. Este flujo queda solo manual por si el repositorio vuelve a ser público.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
