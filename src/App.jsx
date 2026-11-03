@@ -25,8 +25,7 @@ const Icon = ({ d }) => (
 const TABS = [
   { to: '/outfits', label: 'Outfits', d: 'M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 15.6 7.1 18.2 8 12.7 4 8.8 9.5 8z' },
   { to: '/closet', label: 'Clóset', d: 'M12 6a2 2 0 1 1 2 2c-1 0-2 .8-2 2v.5L3 17h18l-9-6.5' },
-  { to: '/comprar', label: 'Comprar', d: 'M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2' },
-  { to: '/vender', label: 'Vender', d: 'M20 12l-8 8-8-8V4h8zM8 8h.01' },
+  { to: '/vitrina', label: 'Vitrina', d: 'M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2' },
   { to: '/saldo', label: 'Saldo', d: 'M3 7h18v12H3zM3 11h18M7 15h3' }
 ];
 
@@ -73,10 +72,12 @@ export default function App() {
           <Route path="/closet" element={<Closet />} />
           <Route path="/closet/nueva" element={<GarmentForm />} />
           <Route path="/closet/:id" element={<GarmentForm />} />
-          <Route path="/comprar" element={<Shop />} />
-          <Route path="/comprar/:id" element={<ListingDetail />} />
-          <Route path="/vender" element={<Sell />} />
-          <Route path="/vender/:garmentId" element={<Sell />} />
+          <Route path="/vitrina" element={<Shop />} />
+          <Route path="/vitrina/p/:id" element={<ListingDetail />} />
+          <Route path="/vitrina/vender" element={<Sell />} />
+          <Route path="/vitrina/vender/:garmentId" element={<Sell />} />
+          <Route path="/comprar/*" element={<Navigate to="/vitrina" replace />} />
+          <Route path="/vender" element={<Navigate to="/vitrina/vender" replace />} />
           <Route path="/pedidos" element={<Orders />} />
           <Route path="/pedidos/:id" element={<OrderDetail />} />
           <Route path="/saldo" element={<Balance />} />

@@ -31,9 +31,13 @@ export default function Shop() {
 
   return (
     <main className="screen stack">
-      <div className="between">
-        <h1 className="h1">Comprar</h1>
-        <Link to="/pedidos" className="small" style={{ fontWeight: 500 }}>Mis pedidos</Link>
+      <div className="stack" style={{ gap: 6 }}>
+        <h1 className="h1">Vitrina</h1>
+        <span className="small muted">Compra y vende ropa con la comunidad Porte en León</span>
+      </div>
+      <div className="row">
+        <Link to="/vitrina/vender" className="btn" style={{ height: 46 }}>+ Vender</Link>
+        <Link to="/pedidos" className="btn ghost" style={{ height: 46 }}>Mis pedidos</Link>
       </div>
       <div className="chips" role="group" aria-label="Filtrar">
         {FILTERS.map((x) => (
@@ -54,7 +58,7 @@ export default function Shop() {
       )}
       <div className="grid2">
         {shown.map((l) => (
-          <Link key={l.id} to={`/comprar/${l.id}`} className="tile">
+          <Link key={l.id} to={`/vitrina/p/${l.id}`} className="tile">
             <Ph url={urls[l.photo_paths[0]]} alt={l.title} />
             <span className="price">{money(l.price)}</span>
             <span className="tile-name">{l.title}</span>

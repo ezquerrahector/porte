@@ -44,7 +44,7 @@ export default function Balance() {
 
       <div className="between"><span style={{ fontWeight: 600 }}>Mis ventas</span><Link to="/pedidos" className="small">Ver pedidos</Link></div>
       {!sales && <div className="loading">Cargando…</div>}
-      {sales?.length === 0 && <div className="empty">Aún no vendes nada. <Link to="/vender">Pon en venta</Link> lo que ya no usas.</div>}
+      {sales?.length === 0 && <div className="empty">Aún no vendes nada. <Link to="/vitrina/vender">Pon en venta</Link> lo que ya no usas.</div>}
       <div>
         {live.map((o) => (
           <Link key={o.id} to={`/pedidos/${o.id}`} className="list-row">

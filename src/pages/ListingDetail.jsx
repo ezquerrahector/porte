@@ -39,7 +39,7 @@ export default function ListingDetail() {
     if (!window.confirm('¿Retirar esta prenda de la venta? Regresará a tu clóset.')) return;
     await supabase.from('listings').update({ status: 'cancelada' }).eq('id', l.id);
     if (l.garment_id) await supabase.from('garments').update({ status: 'activa' }).eq('id', l.garment_id);
-    nav('/vender', { replace: true });
+    nav('/vitrina/vender', { replace: true });
   }
 
   return (
@@ -52,7 +52,7 @@ export default function ListingDetail() {
           </div>
         ))}
       </div>
-      <Link to="/comprar" className="back">← Comprar</Link>
+      <Link to="/vitrina" className="back">← Vitrina</Link>
       <div className="between">
         <h1 className="h1" style={{ fontSize: 28 }}>{l.title}</h1>
         <span style={{ fontSize: 22, fontWeight: 600 }}>{money(l.price)}</span>

@@ -41,7 +41,7 @@ export default function Closet() {
         ))}
       </div>
       {unused.length > 0 && (
-        <Link to="/vender" className="banner">
+        <Link to="/vitrina/vender" className="banner">
           <span><strong>{unused.length} {unused.length === 1 ? 'prenda' : 'prendas'} sin usar en 6 meses.</strong> Ponlas en venta y recogemos en tu casa.</span>
           <span aria-hidden="true">→</span>
         </Link>

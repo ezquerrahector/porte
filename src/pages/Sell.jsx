@@ -24,13 +24,14 @@ function PickGarment() {
 
   return (
     <main className="screen stack">
+      <Link to="/vitrina" className="back">← Vitrina</Link>
       <h1 className="h1">Vender</h1>
       <p className="muted" style={{ margin: 0, lineHeight: 1.5 }}>Elige una prenda de tu clóset. Tú pones el precio; cuando se venda, pasamos por ella a tu domicilio.</p>
       {mine.length > 0 && (
         <div className="stack" style={{ gap: 0 }}>
           <span className="eyebrow" style={{ marginBottom: 4 }}>Mis publicaciones</span>
           {mine.map((l) => (
-            <Link key={l.id} to={`/comprar/${l.id}`} className="list-row">
+            <Link key={l.id} to={`/vitrina/p/${l.id}`} className="list-row">
               <div className="row">
                 <Ph className="thumb" url={urls[l.photo_paths[0]]} alt={l.title} />
                 <div className="stack" style={{ gap: 3 }}>
@@ -52,7 +53,7 @@ function PickGarment() {
         {(items || []).map((g) => {
           const d = daysSince(g.last_worn_at);
           return (
-            <Link key={g.id} to={`/vender/${g.id}`} className="tile">
+            <Link key={g.id} to={`/vitrina/vender/${g.id}`} className="tile">
               <Ph url={urls[g.photo_path]} alt={g.name} />
               <span className="tile-name">{g.name}</span>
               <span className="tile-meta">{d == null ? 'Sin usar aún' : `Usada hace ${d} días`}</span>
@@ -105,7 +106,7 @@ function SellForm({ garmentId }) {
       }).select('id').single();
       if (error) throw error;
       await supabase.from('garments').update({ status: 'en_venta' }).eq('id', g.id);
-      nav(`/comprar/${data.id}`, { replace: true });
+      nav(`/vitrina/p/${data.id}`, { replace: true });
     } catch (e2) {
       console.error(e2);
       setErr('No pudimos publicar. Inténtalo de nuevo.');
@@ -117,7 +118,7 @@ function SellForm({ garmentId }) {
   return (
     <main className="screen">
       <form className="stack" onSubmit={publish}>
-        <Link to="/vender" className="back">← Vender</Link>
+        <Link to="/vitrina/vender" className="back">← Elegir otra prenda</Link>
         <h1 className="h1">Poner en venta</h1>
         <div className="row">
           <Ph className="thumb" url={urls[g.photo_path]} alt={g.name} />
