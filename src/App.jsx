@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, NavLink, useLocation } from 'react-router-dom';
 import { supabase } from './supabase';
-import Login from './pages/Login';
+import Welcome from './pages/Welcome';
 import Outfits from './pages/Outfits';
 import Closet from './pages/Closet';
 import GarmentForm from './pages/GarmentForm';
@@ -60,7 +60,7 @@ export default function App() {
   }, [session]);
 
   if (session === undefined) return <div className="loading">Cargando…</div>;
-  if (!session) return <Login />;
+  if (!session) return <Welcome />;
 
   const ctx = { session, user: session.user, profile, setProfile };
   return (

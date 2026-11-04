@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
 
 const authError = (m = '') => {
@@ -11,12 +11,17 @@ const authError = (m = '') => {
   return m || 'Algo salió mal. Inténtalo de nuevo.';
 };
 
-export default function Login() {
+export default function Login({ compact = false }) {
   const [mode, setMode] = useState('entrar');
   const [form, setForm] = useState({ code: '', name: '', email: '', password: '' });
   const [msg, setMsg] = useState(null);
   const [busy, setBusy] = useState(false);
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+  useEffect(() => {
+    const on = (e) => { setMode(e.detail); setMsg(null); };
+    window.addEventListener('porte:modo', on);
+    return () => window.removeEventListener('porte:modo', on);
+  }, []);
 
   async function submit(e) {
     e.preventDefault();
@@ -55,12 +60,19 @@ export default function Login() {
   return (
     <div className="dark">
       <div className="app" style={{ background: 'transparent', padding: 'calc(env(safe-area-inset-top) + 64px) 32px 40px' }}>
-        <div className="stack" style={{ flex: 1, justifyContent: 'center', minHeight: 220 }}>
-          <div className="wordmark">PORTE</div>
-          <p style={{ margin: 0, fontSize: 17, lineHeight: 1.5, color: '#D9D4CE' }}>
-            Viste con lo que tienes.<br />Vende lo que ya no usas.
-          </p>
-        </div>
+        {compact ? (
+          <div className="stack" style={{ gap: 8, marginBottom: 28 }}>
+            <span className="label" style={{ color: '#BDB4A8' }}>Acceso</span>
+            <h2 className="h1" style={{ color: '#F4EFE8' }}>{mode === 'crear' ? 'Crea tu cuenta' : mode === 'recuperar' ? 'Recupera tu acceso' : 'Qué gusto verte'}</h2>
+          </div>
+        ) : (
+          <div className="stack" style={{ flex: 1, justifyContent: 'center', minHeight: 220 }}>
+            <div className="wordmark">PORTE</div>
+            <p style={{ margin: 0, fontSize: 17, lineHeight: 1.5, color: '#D9D4CE' }}>
+              Viste con lo que tienes.<br />Vende lo que ya no usas.
+            </p>
+          </div>
+        )}
         <form className="stack" onSubmit={submit}>
           {mode === 'crear' && (
             <>
