@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../supabase';
 import { useAuth } from '../App';
 import { uploadPhoto } from '../lib/photos';
+import { studioPhoto, preloadStudio } from '../lib/studio';
 import { usePhotoUrls, Ph } from '../lib/Photo';
 import { CATEGORIES, OCCASIONS, WARMTH, AUDIENCE } from '../lib/labels';
 
@@ -17,7 +18,11 @@ export default function GarmentForm() {
   const [preview, setPreview] = useState(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(null);
+  // Foto de estudio: fondo oscuro uniforme, procesada en el propio teléfono
+  const [studio, setStudio] = useState({ status: 'idle', blob: null, url: null });
+  const [useStudio, setUseStudio] = useState(true);
 
+  useEffect(() => { preloadStudio(); }, []);
   useEffect(() => {
     if (id) supabase.from('garments').select('*').eq('id', id).single().then(({ data }) => setG(data));
   }, [id]);
@@ -32,14 +37,20 @@ export default function GarmentForm() {
     if (!f) return;
     setFile(f);
     setPreview(URL.createObjectURL(f));
+    setStudio({ status: 'working', blob: null, url: null });
+    studioPhoto(f)
+      .then((r) => setStudio(r.ok ? { status: 'ok', blob: r.blob, url: URL.createObjectURL(r.blob) } : { status: 'fail', blob: null, url: null }))
+      .catch(() => setStudio({ status: 'fail', blob: null, url: null }));
   }
+  const studioReady = studio.status === 'ok' && useStudio;
+  const shownPhoto = studioReady ? studio.url : preview;
 
   async function save(e) {
     e.preventDefault();
     setBusy(true); setErr(null);
     try {
       let photo_path = g.photo_path;
-      if (file) photo_path = await uploadPhoto(file, user.id, 'closet');
+      if (file) photo_path = await uploadPhoto(studioReady ? studio.blob : file, user.id, 'closet');
       const row = {
         name: g.name.trim(), category: g.category, color: g.color || null, brand: g.brand || null, size: g.size || null,
         audience: g.audience, occasions: g.occasions, warmth: g.warmth, photo_path
@@ -69,10 +80,26 @@ export default function GarmentForm() {
         <Link to="/closet" className="back">← Mi clóset</Link>
         <h1 className="h1">{id ? g.name : 'Nueva prenda'}</h1>
         <label className="tile" style={{ cursor: 'pointer' }}>
-          <Ph url={preview || urls[g.photo_path]} alt="Foto de la prenda" />
+          <div style={{ position: 'relative' }}>
+            <Ph url={shownPhoto || urls[g.photo_path]} alt="Foto de la prenda" />
+            {studio.status === 'working' && (
+              <div className="studio-working" role="status">Preparando foto de estudio…</div>
+            )}
+          </div>
           <span className="small muted center">{preview || g.photo_path ? 'Toca para cambiar la foto' : 'Toca para tomar o elegir la foto'}</span>
           <input type="file" accept="image/*" capture="environment" onChange={onFile} style={{ display: 'none' }} />
         </label>
+        {!preview && !g.photo_path && (
+          <p className="small muted" style={{ margin: 0, lineHeight: 1.5 }}>Extiende la prenda sobre la cama o una superficie lisa, con buena luz y sin otras cosas alrededor. Nosotros le ponemos el fondo de estudio.</p>
+        )}
+        {studio.status === 'ok' && (
+          <label className="row small" style={{ justifyContent: 'center', gap: 8 }}>
+            <input type="checkbox" checked={useStudio} onChange={(e) => setUseStudio(e.target.checked)} /> Usar fondo de estudio
+          </label>
+        )}
+        {studio.status === 'fail' && (
+          <p className="small muted center" style={{ margin: 0 }}>No pudimos separar la prenda del fondo; guardaremos tu foto original. Prueba sobre una superficie lisa.</p>
+        )}
         <label className="field">Nombre
           <input className="input" required value={g.name} onChange={(e) => set('name', e.target.value)} placeholder="Ej. Camisa Oxford" />
         </label>
@@ -110,7 +137,7 @@ export default function GarmentForm() {
           </div>
         </div>
         {err && <div className="error" role="alert">{err}</div>}
-        <button className="btn" disabled={busy}>{busy ? 'Guardando…' : 'Guardar'}</button>
+        <button className="btn" disabled={busy || studio.status === 'working'}>{busy ? 'Guardando…' : studio.status === 'working' ? 'Preparando foto…' : 'Guardar'}</button>
         {id && g.status === 'activa' && (
           <>
             <Link to={`/bazar/vender/${id}`} className="btn ghost">Poner en venta</Link>

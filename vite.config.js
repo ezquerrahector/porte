@@ -27,7 +27,11 @@ export default defineConfig({
           { src: 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
         ]
       },
-      workbox: { navigateFallbackDenylist: [/^\/rest\//, /^\/auth\//, /^\/storage\//] }
+      workbox: {
+        navigateFallbackDenylist: [/^\/rest\//, /^\/auth\//, /^\/storage\//],
+        // El modelo de fondo de estudio y su motor (~17 MB) se descargan solo al usarse
+        globIgnores: ['**/ort/**', '**/models/**']
+      }
     })
   ]
 });

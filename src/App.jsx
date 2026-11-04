@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, NavLink, useLocation } from 'react-router-dom';
 import { supabase } from './supabase';
 import Welcome from './pages/Welcome';
+import Onboarding from './pages/Onboarding';
 import Outfits from './pages/Outfits';
 import Closet from './pages/Closet';
 import GarmentForm from './pages/GarmentForm';
@@ -63,6 +64,9 @@ export default function App() {
   if (!session) return <Welcome />;
 
   const ctx = { session, user: session.user, profile, setProfile };
+  if (profile && !profile.onboarded_at) {
+    return <AuthCtx.Provider value={ctx}><Onboarding /></AuthCtx.Provider>;
+  }
   return (
     <AuthCtx.Provider value={ctx}>
       <div className="app">
