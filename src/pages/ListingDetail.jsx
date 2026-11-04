@@ -67,7 +67,7 @@ export default function ListingDetail() {
       <Link to="/bazar" className="back">← Bazar</Link>
       <div className="between">
         <h1 className="h1" style={{ fontSize: 28 }}>{l.title}</h1>
-        <span style={{ fontFamily: 'var(--serif)', fontSize: 26 }}>{money(l.price)}</span>
+        <span style={{ fontFamily: 'var(--serif)', fontStretch: '118%', fontWeight: 600, fontSize: 26 }}>{money(l.price)}</span>
       </div>
       <span className="small muted">
         {[categoryLabel(l.category), l.size && `Talla ${l.size}`, conditionLabel(l.condition), l.color, l.brand].filter(Boolean).join(' · ')}

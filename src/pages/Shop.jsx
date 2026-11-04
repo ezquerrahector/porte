@@ -100,8 +100,8 @@ export default function Shop() {
       )}
       <Link to="/muy-pronto" className="dark-banner">
         <span className="stack" style={{ gap: 4 }}>
-          <span className="small" style={{ letterSpacing: 2, color: 'var(--gold)' }}>MUY PRONTO</span>
-          <span style={{ fontFamily: 'var(--serif)', fontSize: 18 }}>Tienda y membresía Porte</span>
+          <span className="small" style={{ color: 'var(--gold)' }}>Muy pronto</span>
+          <span style={{ fontFamily: 'var(--serif)', fontStretch: '118%', fontWeight: 600, fontSize: 18 }}>Tienda y membresía Porte</span>
         </span>
         <span aria-hidden="true">→</span>
       </Link>

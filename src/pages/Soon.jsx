@@ -37,7 +37,7 @@ export default function Soon() {
     <div className="dark">
       <main className="screen stack" style={{ maxWidth: 520, margin: '0 auto' }}>
         <button className="back link" style={{ color: '#D9D4CE', textDecoration: 'none' }} onClick={() => nav(-1)}>← Volver</button>
-        <span className="small" style={{ letterSpacing: 3, color: 'var(--gold)' }}>MUY PRONTO</span>
+        <span className="small" style={{ color: 'var(--gold)' }}>Muy pronto</span>
         <h1 className="h1" style={{ fontSize: 34 }}>Ropa nueva elegida para ti</h1>
 
         {mode === 'info' && (

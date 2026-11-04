@@ -82,16 +82,16 @@ export default function Welcome() {
             <svg viewBox="0 0 100 70" width="150" aria-hidden="true" style={{ opacity: 0.9 }}>
               <Draw d={HANGER} t={reduce ? 1 : clamp(0.15 + s1)} w={1.1} />
             </svg>
-            <h1 style={{ margin: 0, fontFamily: 'var(--serif)', fontWeight: 400, fontSize: 'clamp(56px, 16vw, 132px)', letterSpacing: `${0.42 - s1 * 0.22}em`, paddingLeft: `${0.42 - s1 * 0.22}em`, lineHeight: 1 }}>PORTE</h1>
+            <h1 style={{ margin: 0, fontFamily: 'var(--serif)', fontStretch: '118%', fontWeight: 600, fontSize: 'clamp(44px, 13vw, 110px)', fontStretch: '125%', letterSpacing: `${0.3 - s1 * 0.18}em`, paddingLeft: `${0.3 - s1 * 0.18}em`, lineHeight: 1 }}>PORTE</h1>
             <p className="label" style={{ margin: 0, color: '#BDB4A8', opacity: 0.4 + s1 * 0.6 }}>Clóset · Outfits · Bazar</p>
             <span className="label" style={{ position: 'absolute', bottom: 36, color: '#8C847A', opacity: 1 - s1 * 2 }}>Desliza</span>
           </div>
 
           {/* Escena 2: el outfit se arma */}
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 22, padding: '0 24px', opacity: fade(s2, out2) }}>
-            <span className="label" style={{ color: '#BDB4A8' }}>01 · Outfits</span>
-            <h2 style={{ margin: 0, fontFamily: 'var(--serif)', fontWeight: 400, fontSize: 'clamp(36px, 9vw, 72px)', lineHeight: 1.05, textAlign: 'center', transform: rise(s2) }}>
-              Viste con<br /><em>lo que tienes.</em>
+            <span className="label" style={{ color: '#BDB4A8' }}>Outfits</span>
+            <h2 style={{ margin: 0, fontFamily: 'var(--serif)', fontStretch: '118%', fontWeight: 600, fontSize: 'clamp(36px, 9vw, 72px)', lineHeight: 1.05, textAlign: 'center', transform: rise(s2) }}>
+              Viste con<br />lo que tienes.
             </h2>
             <svg viewBox="0 0 220 210" width="min(78vw, 360px)" aria-hidden="true">
               <Piece d={BLAZER} t={seg(s2, 0.05, 0.4)} x={20} y={0} />
@@ -106,9 +106,9 @@ export default function Welcome() {
 
           {/* Escena 3: la prenda pasa al Bazar */}
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 22, padding: '0 24px', opacity: fade(s3, out3) }}>
-            <span className="label" style={{ color: '#BDB4A8' }}>02 · Bazar</span>
-            <h2 style={{ margin: 0, fontFamily: 'var(--serif)', fontWeight: 400, fontSize: 'clamp(36px, 9vw, 72px)', lineHeight: 1.05, textAlign: 'center', transform: rise(s3) }}>
-              Vende lo que<br /><em>ya no usas.</em>
+            <span className="label" style={{ color: '#BDB4A8' }}>Bazar</span>
+            <h2 style={{ margin: 0, fontFamily: 'var(--serif)', fontStretch: '118%', fontWeight: 600, fontSize: 'clamp(36px, 9vw, 72px)', lineHeight: 1.05, textAlign: 'center', transform: rise(s3) }}>
+              Vende lo que<br />ya no usas.
             </h2>
             <svg viewBox="0 0 220 150" width="min(78vw, 360px)" aria-hidden="true">
               <g transform={`translate(${20 + ease(seg(s3, 0.15, 0.6)) * 40} 20)`}>
@@ -117,7 +117,7 @@ export default function Welcome() {
               <g opacity={seg(s3, 0.45, 0.75)} transform="translate(150 34)">
                 <line x1="0" y1="14" x2="-14" y2="22" stroke={OX} strokeWidth="1.2" />
                 <rect x="0" y="0" width="62" height="28" rx="2" fill="none" stroke={OX} strokeWidth="1.2" />
-                <text x="31" y="19" textAnchor="middle" fill={IVORY} style={{ fontFamily: 'var(--serif)', fontSize: 14 }}>$1,150</text>
+                <text x="31" y="19" textAnchor="middle" fill={IVORY} style={{ fontFamily: 'var(--serif)', fontStretch: '118%', fontWeight: 600, fontSize: 14 }}>$1,150</text>
               </g>
             </svg>
             <p style={{ margin: 0, maxWidth: 320, textAlign: 'center', lineHeight: 1.55, color: '#CFC6BA', opacity: seg(s3, 0.6, 1) }}>
@@ -127,7 +127,7 @@ export default function Welcome() {
 
           {/* Escena 4: entrar */}
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 26, padding: '0 28px', opacity: fade(s4), pointerEvents: s4 > 0.5 ? 'auto' : 'none' }}>
-            <h2 style={{ margin: 0, fontFamily: 'var(--serif)', fontWeight: 400, fontSize: 'clamp(40px, 10vw, 80px)', letterSpacing: '0.2em', paddingLeft: '0.2em' }}>PORTE</h2>
+            <h2 style={{ margin: 0, fontFamily: 'var(--serif)', fontStretch: '118%', fontWeight: 600, fontSize: 'clamp(40px, 10vw, 80px)', letterSpacing: '0.12em', paddingLeft: '0.12em' }}>PORTE</h2>
             <p style={{ margin: 0, textAlign: 'center', lineHeight: 1.55, color: '#CFC6BA', maxWidth: 300 }}>Tu clóset, mejor usado.<br />Empieza hoy, es gratis.</p>
             <div className="stack" style={{ width: '100%', maxWidth: 320, gap: 12 }}>
               <button className="btn light" onClick={() => toForm('crear')}>Crear una cuenta</button>

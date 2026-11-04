@@ -31,7 +31,7 @@ function OrderCard({ o, reload }) {
       <div className="small" style={{ lineHeight: 1.5 }}>
         <div><strong>Entregar en:</strong> {o.buyer_address || '—'}</div>
         <div><strong>Tel. comprador:</strong> {o.buyer_phone || '—'}</div>
-        <div><strong>Vendedor:</strong> {o.seller?.full_name || '—'} · {o.seller?.phone || 'sin teléfono'} · {o.seller?.zone || 'sin zona'}</div>
+        <div><strong>Vendedor:</strong> {o.seller?.full_name || '—'} · {o.seller?.phone || 'sin teléfono'} · CP {o.seller?.postal_code || '—'}</div>
       </div>
       {next && (
         <>
@@ -60,7 +60,7 @@ export default function Admin() {
   const [filter, setFilter] = useState('activos');
 
   async function load() {
-    const { data } = await supabase.from('orders').select('*, listing:listings(title), seller:profiles!orders_seller_id_fkey(full_name, phone, zone)').order('created_at', { ascending: false });
+    const { data } = await supabase.from('orders').select('*, listing:listings(title), seller:profiles!orders_seller_id_fkey(full_name, phone, postal_code)').order('created_at', { ascending: false });
     setOrders(data || []);
     const { data: inv } = await supabase.from('invites').select('*').order('created_at', { ascending: false });
     setInvites(inv || []);

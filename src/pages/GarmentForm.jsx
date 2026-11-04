@@ -4,6 +4,7 @@ import { supabase } from '../supabase';
 import { useAuth } from '../App';
 import { uploadPhoto } from '../lib/photos';
 import { studioPhoto, preloadStudio } from '../lib/studio';
+import PhotoTutorial from '../lib/PhotoTutorial';
 import { usePhotoUrls, Ph } from '../lib/Photo';
 import { CATEGORIES, OCCASIONS, WARMTH, AUDIENCE } from '../lib/labels';
 import { SkeletonDetail, useConfirm } from '../lib/ui';
@@ -23,6 +24,7 @@ export default function GarmentForm() {
   // Foto de estudio: fondo oscuro uniforme, procesada en el propio teléfono
   const [studio, setStudio] = useState({ status: 'idle', blob: null, url: null });
   const [useStudio, setUseStudio] = useState(true);
+  const [tut, setTut] = useState(false);
 
   useEffect(() => { preloadStudio(); }, []);
   useEffect(() => {
@@ -91,8 +93,11 @@ export default function GarmentForm() {
           <span className="small muted center">{preview || g.photo_path ? 'Toca para cambiar la foto' : 'Toca para tomar o elegir la foto'}</span>
           <input type="file" accept="image/*" capture="environment" onChange={onFile} style={{ display: 'none' }} />
         </label>
-        {!preview && !g.photo_path && (
-          <p className="small muted" style={{ margin: 0, lineHeight: 1.5 }}>Extiende la prenda sobre la cama o una superficie lisa, con buena luz y sin otras cosas alrededor. Nosotros le ponemos el fondo de estudio.</p>
+        <button type="button" className="link" style={{ alignSelf: 'center' }} onClick={() => setTut(!tut)}>{tut ? 'Cerrar tutorial' : '¿Cómo tomo una buena foto?'}</button>
+        {tut && (
+          <div style={{ background: '#141414', borderRadius: 8, padding: 16 }}>
+            <PhotoTutorial onDone={() => setTut(false)} />
+          </div>
         )}
         {studio.status === 'ok' && (
           <label className="row small" style={{ justifyContent: 'center', gap: 8 }}>

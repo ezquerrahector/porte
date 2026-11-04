@@ -52,7 +52,7 @@ export default function BuildOutfit() {
       <Link to="/outfits" className="back">← Outfits</Link>
       <div className="stack" style={{ gap: 6 }}>
         <span className="eyebrow">Armar a mano</span>
-        <h1 className="h1">Elige una pieza<br /><em>de cada fila.</em></h1>
+        <h1 className="h1">Elige una pieza<br />de cada fila.</h1>
       </div>
       {!items && <SkeletonRows count={4} />}
       {items && rows.length === 0 && <div className="empty">Agrega prendas a tu clóset para armar outfits. <Link to="/closet/nueva">Agregar prenda</Link></div>}

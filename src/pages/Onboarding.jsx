@@ -2,19 +2,22 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabase';
 import { useAuth } from '../App';
+import { StyleArt, STYLE_INFO, Swatches } from '../lib/StyleArt';
+import PhotoTutorial from '../lib/PhotoTutorial';
 
 // Recorrido de primera vez: 4 pasos cortos. Guarda tallas, zona y estilo en el perfil
 // y termina llevando a cargar la primera prenda.
 const STYLES = ['Clásico', 'Minimalista', 'Casual', 'Ejecutivo', 'Atrevido', 'Deportivo'];
 const COLORS = ['Neutros', 'Oscuros', 'Tierra', 'Pastel', 'Vivos'];
-const STEPS = 4;
+const STEPS = 5;
+const COLOR_INFO = { Neutros: 'Negro, blanco, gris, beige, marino', Oscuros: 'Negro, carbón, marino, vino', Tierra: 'Café, camel, terracota, olivo', Pastel: 'Rosa, cielo, menta, lavanda', Vivos: 'Rojo, azul rey, amarillo, verde' };
 
 export default function Onboarding() {
   const { user, profile, setProfile } = useAuth();
   const nav = useNavigate();
   const [step, setStep] = useState(0);
   const [p, setP] = useState({
-    full_name: profile?.full_name || '', zone: profile?.zone || '', phone: profile?.phone || '',
+    full_name: profile?.full_name || '', postal_code: profile?.postal_code || '', phone: profile?.phone || '',
     size_top: profile?.size_top || '', size_bottom: profile?.size_bottom || '', shoe_size: profile?.shoe_size || '',
     style: profile?.style || {}
   });
@@ -29,7 +32,7 @@ export default function Onboarding() {
   async function finish(goTo) {
     setBusy(true);
     const { data } = await supabase.from('profiles').update({
-      full_name: p.full_name || null, zone: p.zone || null, phone: p.phone || null,
+      full_name: p.full_name || null, postal_code: p.postal_code || null, phone: p.phone || null,
       size_top: p.size_top || null, size_bottom: p.size_bottom || null, shoe_size: p.shoe_size || null,
       style: p.style, onboarded_at: new Date().toISOString()
     }).eq('id', user.id).select().single();
@@ -52,12 +55,12 @@ export default function Onboarding() {
         {step === 0 && (
           <>
             <span className="label" style={{ color: '#BDB4A8', marginTop: 24 }}>Bienvenida a Porte</span>
-            <h1 className="h1" style={{ fontSize: 40 }}>{first ? `${first},` : 'Hola,'}<br /><em>tu clóset, mejor usado.</em></h1>
+            <h1 className="h1" style={{ fontSize: 40 }}>{first ? `${first},` : 'Hola,'}<br />tu clóset, mejor usado.</h1>
             <p className="muted" style={{ margin: 0, lineHeight: 1.6 }}>En dos minutos dejamos tu perfil listo. Así cada outfit y cada prenda del Bazar se ajustan a ti.</p>
             <div className="stack" style={{ gap: 14, marginTop: 8 }}>
               {[['Outfits', 'Un look al día con tus propias prendas.'], ['Clóset', 'Cada prenda con foto de estudio.'], ['Bazar', 'Vende lo que ya no usas; pasamos por ello.']].map(([t, d]) => (
                 <div key={t} className="row" style={{ alignItems: 'baseline', gap: 14, borderTop: '1px solid #3A3734', paddingTop: 14 }}>
-                  <span style={{ fontFamily: 'var(--serif)', fontSize: 20, minWidth: 88 }}>{t}</span>
+                  <span style={{ fontFamily: 'var(--serif)', fontStretch: '118%', fontWeight: 600, fontSize: 18, minWidth: 88 }}>{t}</span>
                   <span className="muted small" style={{ lineHeight: 1.5 }}>{d}</span>
                 </div>
               ))}
@@ -75,41 +78,55 @@ export default function Onboarding() {
               <label className="field">Abajo<input className="input" value={p.size_bottom} onChange={set('size_bottom')} placeholder="32" /></label>
               <label className="field">Calzado<input className="input" value={p.shoe_size} onChange={set('shoe_size')} placeholder="26" /></label>
             </div>
-            <label className="field">Colonia o zona de León<input className="input" value={p.zone} onChange={set('zone')} placeholder="Ej. Jardines del Moral" /></label>
+            <label className="field">Código postal
+              <input className="input" inputMode="numeric" autoComplete="postal-code" maxLength={5} value={p.postal_code} onChange={(e) => setP({ ...p, postal_code: e.target.value.replace(/\D/g, '').slice(0, 5) })} placeholder="37000" />
+              {p.postal_code.length === 5 && (p.postal_code < '37000' || p.postal_code > '37699') && (
+                <span className="small" style={{ color: '#E8B4B8', fontWeight: 400, lineHeight: 1.5 }}>Por ahora recolectamos y entregamos solo en León. Tu clóset y tus outfits funcionan desde cualquier lugar.</span>
+              )}
+            </label>
             <label className="field">WhatsApp<input className="input" type="tel" value={p.phone} onChange={set('phone')} placeholder="Para coordinar recolecciones y entregas" /></label>
           </>
         )}
 
         {step === 2 && (
           <>
-            <span className="label" style={{ color: '#BDB4A8', marginTop: 24 }}>Tu estilo</span>
+            <span className="label" style={{ color: '#BDB4A8', marginTop: 24 }}>Tu estilo · elige uno o varios</span>
             <h1 className="h1">¿Cómo te gusta vestir?</h1>
-            <div className="field">Elige uno o varios
-              <div className="chips wrap">
-                {STYLES.map((s) => (
-                  <button key={s} type="button" className="chip" style={on('estilo', s) ? { background: '#F4EFE8', color: '#141414', borderColor: '#F4EFE8' } : { background: 'transparent', color: '#F4EFE8', borderColor: '#4A4642' }} onClick={() => toggle('estilo', s)}>{s}</button>
-                ))}
-              </div>
-            </div>
-            <div className="field">Colores que más usas
-              <div className="chips wrap">
-                {COLORS.map((s) => (
-                  <button key={s} type="button" className="chip" style={on('colores', s) ? { background: '#F4EFE8', color: '#141414', borderColor: '#F4EFE8' } : { background: 'transparent', color: '#F4EFE8', borderColor: '#4A4642' }} onClick={() => toggle('colores', s)}>{s}</button>
-                ))}
-              </div>
+            <div className="grid2" style={{ gap: 10 }}>
+              {STYLES.map((s) => (
+                <button key={s} type="button" className={`style-card ${on('estilo', s) ? 'on' : ''}`} aria-pressed={on('estilo', s)} onClick={() => toggle('estilo', s)}>
+                  <span className="art"><StyleArt name={s} /></span>
+                  <span style={{ fontWeight: 600 }}>{s}</span>
+                  <span className="small" style={{ color: '#BDB4A8', lineHeight: 1.4 }}>{STYLE_INFO[s]}</span>
+                </button>
+              ))}
             </div>
           </>
         )}
 
         {step === 3 && (
           <>
+            <span className="label" style={{ color: '#BDB4A8', marginTop: 24 }}>Tus colores · elige uno o varios</span>
+            <h1 className="h1">¿Qué colores usas más?</h1>
+            <div className="stack" style={{ gap: 10 }}>
+              {COLORS.map((s) => (
+                <button key={s} type="button" className={`palette-row ${on('colores', s) ? 'on' : ''}`} aria-pressed={on('colores', s)} onClick={() => toggle('colores', s)}>
+                  <span className="stack" style={{ gap: 2, textAlign: 'left' }}>
+                    <span style={{ fontWeight: 600 }}>{s}</span>
+                    <span className="small" style={{ color: '#BDB4A8' }}>{COLOR_INFO[s]}</span>
+                  </span>
+                  <Swatches name={s} />
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        {step === 4 && (
+          <>
             <span className="label" style={{ color: '#BDB4A8', marginTop: 24 }}>Tu primera prenda</span>
-            <h1 className="h1">Así se toma<br /><em>una buena foto.</em></h1>
-            <ol className="stack" style={{ margin: 0, paddingLeft: 20, gap: 12, lineHeight: 1.55, color: '#D9D2C8' }}>
-              <li>Extiende la prenda sobre la cama o el piso, sin arrugas y sin otras cosas alrededor.</li>
-              <li>Toma la foto desde arriba, con luz natural y sin flash.</li>
-              <li>Nosotros quitamos el fondo y la dejamos en estudio, como en una boutique.</li>
-            </ol>
+            <h1 className="h1">Así se toma una buena foto</h1>
+            <PhotoTutorial />
             <p className="muted small" style={{ margin: 0, lineHeight: 1.5 }}>Con algo de arriba, algo de abajo y un par de zapatos ya te proponemos tu primer outfit.</p>
           </>
         )}
