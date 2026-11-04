@@ -5,7 +5,7 @@ const authError = (m = '') => {
   if (/Invalid login/i.test(m)) return 'Correo o contraseña incorrectos.';
   if (/Email not confirmed/i.test(m)) return 'Confirma tu correo con el enlace que te enviamos.';
   if (/already registered/i.test(m)) return 'Ese correo ya tiene cuenta. Entra con tu contraseña.';
-  if (/invitaci/i.test(m) || /Database error saving new user/i.test(m)) return 'El código de invitación no es válido o ya se usó.';
+  if (/Database error saving new user/i.test(m)) return 'No pudimos crear tu cuenta. Inténtalo de nuevo en un momento.';
   if (/Password should be/i.test(m)) return 'La contraseña debe tener al menos 8 caracteres.';
   if (/rate limit/i.test(m)) return 'Demasiados intentos. Espera unos minutos e inténtalo de nuevo.';
   return m || 'Algo salió mal. Inténtalo de nuevo.';
@@ -31,8 +31,6 @@ export default function Login({ compact = false }) {
         const { error } = await supabase.auth.signInWithPassword({ email: form.email.trim(), password: form.password });
         if (error) throw error;
       } else if (mode === 'crear') {
-        const { data: valid } = await supabase.rpc('check_invite', { p_code: form.code });
-        if (!valid) throw new Error('invitación');
         const { data, error } = await supabase.auth.signUp({
           email: form.email.trim(),
           password: form.password,
@@ -76,8 +74,8 @@ export default function Login({ compact = false }) {
         <form className="stack" onSubmit={submit}>
           {mode === 'crear' && (
             <>
-              <label className="field">Código de invitación
-                <input className="input" required value={form.code} onChange={set('code')} placeholder="PORTE-XXXX" autoCapitalize="characters" style={{ letterSpacing: 2 }} />
+              <label className="field">Código de invitación (opcional)
+                <input className="input" value={form.code} onChange={set('code')} placeholder="PORTE-XXXX" autoCapitalize="characters" style={{ letterSpacing: 2 }} />
               </label>
               <label className="field">Tu nombre
                 <input className="input" required value={form.name} onChange={set('name')} autoComplete="name" />
@@ -100,13 +98,13 @@ export default function Login({ compact = false }) {
           <div className="center small" style={{ color: '#BDB6AF', display: 'flex', flexDirection: 'column', gap: 4 }}>
             {mode === 'entrar' ? (
               <>
-                <button type="button" className="link" style={{ color: '#fff' }} onClick={() => { setMode('crear'); setMsg(null); }}>Tengo una invitación</button>
+                <button type="button" className="link" style={{ color: '#fff' }} onClick={() => { setMode('crear'); setMsg(null); }}>Crear una cuenta</button>
                 <button type="button" className="link" style={{ color: '#BDB6AF' }} onClick={() => { setMode('recuperar'); setMsg(null); }}>Olvidé mi contraseña</button>
               </>
             ) : (
               <button type="button" className="link" style={{ color: '#fff' }} onClick={() => { setMode('entrar'); setMsg(null); }}>Ya tengo cuenta</button>
             )}
-            <span>Acceso solo por invitación · Piloto León</span>
+            <span>Hecho en León, Guanajuato</span>
           </div>
         </form>
       </div>

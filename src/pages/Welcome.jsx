@@ -83,7 +83,7 @@ export default function Welcome() {
               <Draw d={HANGER} t={reduce ? 1 : clamp(0.15 + s1)} w={1.1} />
             </svg>
             <h1 style={{ margin: 0, fontFamily: 'var(--serif)', fontWeight: 400, fontSize: 'clamp(56px, 16vw, 132px)', letterSpacing: `${0.42 - s1 * 0.22}em`, paddingLeft: `${0.42 - s1 * 0.22}em`, lineHeight: 1 }}>PORTE</h1>
-            <p className="label" style={{ margin: 0, color: '#BDB4A8', opacity: 0.4 + s1 * 0.6 }}>León · Piloto por invitación</p>
+            <p className="label" style={{ margin: 0, color: '#BDB4A8', opacity: 0.4 + s1 * 0.6 }}>Clóset · Outfits · Bazar</p>
             <span className="label" style={{ position: 'absolute', bottom: 36, color: '#8C847A', opacity: 1 - s1 * 2 }}>Desliza</span>
           </div>
 
@@ -128,10 +128,10 @@ export default function Welcome() {
           {/* Escena 4: entrar */}
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 26, padding: '0 28px', opacity: fade(s4), pointerEvents: s4 > 0.5 ? 'auto' : 'none' }}>
             <h2 style={{ margin: 0, fontFamily: 'var(--serif)', fontWeight: 400, fontSize: 'clamp(40px, 10vw, 80px)', letterSpacing: '0.2em', paddingLeft: '0.2em' }}>PORTE</h2>
-            <p style={{ margin: 0, textAlign: 'center', lineHeight: 1.55, color: '#CFC6BA', maxWidth: 300 }}>Tu clóset, mejor usado.<br />Por ahora, solo por invitación.</p>
+            <p style={{ margin: 0, textAlign: 'center', lineHeight: 1.55, color: '#CFC6BA', maxWidth: 300 }}>Tu clóset, mejor usado.<br />Empieza hoy, es gratis.</p>
             <div className="stack" style={{ width: '100%', maxWidth: 320, gap: 12 }}>
-              <button className="btn light" onClick={() => toForm('entrar')}>Entrar</button>
-              <button className="btn ghost" style={{ color: IVORY, borderColor: '#5A534C' }} onClick={() => toForm('crear')}>Tengo una invitación</button>
+              <button className="btn light" onClick={() => toForm('crear')}>Crear una cuenta</button>
+              <button className="btn ghost" style={{ color: IVORY, borderColor: '#5A534C' }} onClick={() => toForm('entrar')}>Ya tengo cuenta</button>
             </div>
           </div>
 
