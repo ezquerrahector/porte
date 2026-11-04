@@ -78,7 +78,7 @@ export default function Outfits() {
             {outfit.pieces.map((p) => (
               <Link key={p.g.id} to={`/closet/${p.g.id}`} className="tile">
                 <Ph url={urls[p.g.photo_path]} alt={p.g.name} />
-                <span className="eyebrow" style={{ fontSize: 11 }}>{p.slot}</span>
+                <span className="eyebrow" style={{ fontSize: 12 }}>{p.slot.charAt(0) + p.slot.slice(1).toLowerCase()}</span>
                 <span className="tile-name">{p.g.name}</span>
               </Link>
             ))}

@@ -4,9 +4,26 @@ export const CATEGORIES = [
   { id: 'abajo', label: 'Abajo', hint: 'Pantalones, faldas, shorts' },
   { id: 'vestido', label: 'Vestidos', hint: 'Vestidos y monos' },
   { id: 'calzado', label: 'Calzado', hint: 'Zapatos, tenis, botas' },
-  { id: 'accesorio', label: 'Accesorios', hint: 'Bolsas, cinturones, joyería' }
+  { id: 'accesorio', label: 'Accesorios', hint: 'Cinturones, corbatas, relojes, anillos, bolsas' }
 ];
 export const categoryLabel = (id) => CATEGORIES.find((c) => c.id === id)?.label ?? id;
+
+export const ACCESSORY_TYPES = [
+  { id: 'cinturon', label: 'Cinturón' },
+  { id: 'corbata', label: 'Corbata' },
+  { id: 'reloj', label: 'Reloj' },
+  { id: 'anillo', label: 'Anillo' },
+  { id: 'collar', label: 'Collar' },
+  { id: 'aretes', label: 'Aretes' },
+  { id: 'pulsera', label: 'Pulsera' },
+  { id: 'bolsa', label: 'Bolsa' },
+  { id: 'lentes', label: 'Lentes' },
+  { id: 'sombrero', label: 'Sombrero o gorra' },
+  { id: 'bufanda', label: 'Bufanda' },
+  { id: 'panuelo', label: 'Pañuelo' },
+  { id: 'mancuernillas', label: 'Mancuernillas' }
+];
+export const accessoryLabel = (id) => ACCESSORY_TYPES.find((a) => a.id === id)?.label ?? 'Accesorio';
 
 export const OCCASIONS = [
   { id: 'casual', label: 'Casual' },

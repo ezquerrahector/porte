@@ -6,10 +6,10 @@ import { uploadPhoto } from '../lib/photos';
 import { studioPhoto, preloadStudio } from '../lib/studio';
 import PhotoTutorial from '../lib/PhotoTutorial';
 import { usePhotoUrls, Ph } from '../lib/Photo';
-import { CATEGORIES, OCCASIONS, WARMTH, AUDIENCE } from '../lib/labels';
+import { CATEGORIES, OCCASIONS, WARMTH, AUDIENCE, ACCESSORY_TYPES } from '../lib/labels';
 import { SkeletonDetail, useConfirm } from '../lib/ui';
 
-const EMPTY = { name: '', category: 'arriba', color: '', brand: '', size: '', audience: 'unisex', occasions: [], warmth: 'media', photo_path: null };
+const EMPTY = { name: '', category: 'arriba', color: '', brand: '', size: '', audience: 'unisex', occasions: [], warmth: 'media', photo_path: null, subtype: null };
 
 export default function GarmentForm() {
   const { id } = useParams();
@@ -57,7 +57,8 @@ export default function GarmentForm() {
       if (file) photo_path = await uploadPhoto(studioReady ? studio.blob : file, user.id, 'closet');
       const row = {
         name: g.name.trim(), category: g.category, color: g.color || null, brand: g.brand || null, size: g.size || null,
-        audience: g.audience, occasions: g.occasions, warmth: g.warmth, photo_path
+        audience: g.audience, occasions: g.occasions, warmth: g.warmth, photo_path,
+        subtype: g.category === 'accesorio' ? g.subtype || null : null
       };
       const { error } = id
         ? await supabase.from('garments').update(row).eq('id', id)
@@ -117,8 +118,17 @@ export default function GarmentForm() {
             ))}
           </div>
         </div>
+        {g.category === 'accesorio' && (
+          <div className="field">¿Qué accesorio es?
+            <div className="chips wrap">
+              {ACCESSORY_TYPES.map((a) => (
+                <button type="button" key={a.id} className={`chip ${g.subtype === a.id ? 'on' : ''}`} onClick={() => set('subtype', a.id)}>{a.label}</button>
+              ))}
+            </div>
+          </div>
+        )}
         <div className="grid2">
-          <label className="field">Color<input className="input" value={g.color ?? ''} onChange={(e) => set('color', e.target.value)} placeholder="Blanca" /></label>
+          <label className="field">Color<input className="input" value={g.color ?? ''} onChange={(e) => set('color', e.target.value)} placeholder={g.category === 'accesorio' ? 'Dorado, café, negro…' : 'Blanca'} /></label>
           <label className="field">Talla<input className="input" value={g.size ?? ''} onChange={(e) => set('size', e.target.value)} placeholder="M, 32, 26…" /></label>
         </div>
         <label className="field">Marca (opcional)<input className="input" value={g.brand ?? ''} onChange={(e) => set('brand', e.target.value)} /></label>
