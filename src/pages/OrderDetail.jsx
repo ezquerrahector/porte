@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { supabase } from '../supabase';
 import { useAuth } from '../App';
 import { ORDER_STEPS, money, orderStatusLabel } from '../lib/labels';
+import { SkeletonRows } from '../lib/ui';
 
 const fmt = (d) => new Intl.DateTimeFormat('es-MX', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(d));
 
@@ -12,15 +13,20 @@ export default function OrderDetail() {
   const [o, setO] = useState(null);
   const [events, setEvents] = useState([]);
   const [msg, setMsg] = useState(null);
+  const [review, setReview] = useState(undefined);
+  const [stars, setStars] = useState(0);
+  const [comment, setComment] = useState('');
 
   async function load() {
     const { data } = await supabase.from('orders').select('*, listing:listings(title)').eq('id', id).single();
     setO(data);
     const { data: ev } = await supabase.from('order_events').select('*').eq('order_id', id).order('created_at');
     setEvents(ev || []);
+    const { data: rv } = await supabase.from('reviews').select('*').eq('order_id', id).maybeSingle();
+    setReview(rv || null);
   }
   useEffect(() => { load(); }, [id]);
-  if (!o) return <main className="screen"><div className="loading">Cargando…</div></main>;
+  if (!o) return <main className="screen"><SkeletonRows count={4} /></main>;
 
   const isBuyer = o.buyer_id === user.id;
   const idx = ORDER_STEPS.findIndex((s) => s.id === o.status);
@@ -32,6 +38,12 @@ export default function OrderDetail() {
     return s.detail;
   };
   const hoursLeft = o.delivered_at ? Math.max(0, 48 - Math.floor((Date.now() - new Date(o.delivered_at)) / 3600000)) : null;
+
+  async function rate() {
+    const { error } = await supabase.from('reviews').insert({ order_id: o.id, seller_id: o.seller_id, rating: stars, comment: comment.trim() || null });
+    if (!error) load();
+    else setMsg({ error: 'No pudimos guardar tu calificación.' });
+  }
 
   async function confirm() {
     const { error } = await supabase.rpc('confirm_order', { p_order: o.id });
@@ -70,6 +82,19 @@ export default function OrderDetail() {
           <a className="btn ghost" href={`https://wa.me/?text=${encodeURIComponent(`Hola Porte, tengo un problema con mi pedido P-${String(o.folio).padStart(4, '0')}`)}`} target="_blank" rel="noreferrer">Reportar un problema</a>
         </div>
       )}
+      {isBuyer && o.status === 'conforme' && review === null && (
+        <div className="card stack">
+          <span className="h2">¿Cómo te fue con esta compra?</span>
+          <div className="stars" role="radiogroup" aria-label="Calificación">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <button key={n} type="button" role="radio" aria-checked={stars === n} aria-label={`${n} de 5`} className={n <= stars ? 'on' : ''} onClick={() => setStars(n)}>★</button>
+            ))}
+          </div>
+          <textarea className="input" value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Comentario para el vendedor (opcional)" aria-label="Comentario" />
+          <button className="btn" disabled={!stars} onClick={rate}>Enviar calificación</button>
+        </div>
+      )}
+      {review && <div className="ok">{isBuyer ? 'Calificaste esta compra' : 'Te calificaron'} con {'★'.repeat(review.rating)}{review.comment ? ` · “${review.comment}”` : ''}</div>}
       <div className="spacer" />
       <a className="btn ghost" href={`https://wa.me/?text=${encodeURIComponent(`Hola Porte, pregunta sobre mi pedido P-${String(o.folio).padStart(4, '0')}`)}`} target="_blank" rel="noreferrer">Contactar a Porte</a>
     </main>

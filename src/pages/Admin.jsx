@@ -3,10 +3,12 @@ import { Navigate, Link } from 'react-router-dom';
 import { supabase } from '../supabase';
 import { useAuth } from '../App';
 import { ORDER_STEPS, money, orderStatusLabel } from '../lib/labels';
+import { SkeletonRows, useConfirm } from '../lib/ui';
 
 const NEXT = { apartado: 'recoleccion_programada', recoleccion_programada: 'recogido', recogido: 'en_camino', en_camino: 'entregado', entregado: 'conforme' };
 
 function OrderCard({ o, reload }) {
+  const confirm = useConfirm();
   const [win, setWin] = useState('');
   const [note, setNote] = useState('');
   const [err, setErr] = useState(null);
@@ -41,7 +43,7 @@ function OrderCard({ o, reload }) {
       {!['conforme', 'cancelado'].includes(o.status) && (
         <div className="row">
           <button className="btn ghost" onClick={() => go('incidencia')}>Incidencia</button>
-          <button className="btn ghost" onClick={() => window.confirm('¿Cancelar el pedido? La prenda vuelve a publicarse.') && go('cancelado')}>Cancelar</button>
+          <button className="btn ghost" onClick={async () => (await confirm({ title: '¿Cancelar el pedido?', body: 'La prenda vuelve a publicarse en el Bazar.', ok: 'Cancelar pedido', cancel: 'Volver', danger: true })) && go('cancelado')}>Cancelar</button>
         </div>
       )}
       {err && <div className="error">{err}</div>}
@@ -83,7 +85,7 @@ export default function Admin() {
         <button className={`chip ${filter === 'activos' ? 'on' : ''}`} onClick={() => setFilter('activos')}>Pedidos activos</button>
         <button className={`chip ${filter === 'todos' ? 'on' : ''}`} onClick={() => setFilter('todos')}>Todos</button>
       </div>
-      {!orders && <div className="loading">Cargando…</div>}
+      {!orders && <SkeletonRows />}
       {orders && shown.length === 0 && <div className="empty">Sin pedidos por atender.</div>}
       {shown.map((o) => <OrderCard key={o.id} o={o} reload={load} />)}
 

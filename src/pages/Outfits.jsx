@@ -6,6 +6,7 @@ import { buildOutfit, closetGaps } from '../lib/outfits';
 import { getWeather } from '../lib/weather';
 import { OCCASIONS } from '../lib/labels';
 import { usePhotoUrls, Ph } from '../lib/Photo';
+import { SkeletonGrid } from '../lib/ui';
 
 const today = () =>
   new Intl.DateTimeFormat('es-MX', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
@@ -61,7 +62,7 @@ export default function Outfits() {
         ))}
       </div>
 
-      {!garments && <div className="loading">Preparando tu look…</div>}
+      {!garments && <SkeletonGrid count={4} meta={1} />}
 
       {garments && !outfit?.complete && (
         <div className="empty stack">
@@ -93,7 +94,7 @@ export default function Outfits() {
           </div>
           <div className="row" style={{ justifyContent: 'center', gap: 24 }}>
             <button className="link muted" style={{ textDecoration: 'none' }} onClick={dislike}>No es mi estilo</button>
-            <Link className="link" to="/closet">Ver mi clóset</Link>
+            <Link className="link" to="/outfits/armar">Armar a mano</Link>
           </div>
         </>
       )}

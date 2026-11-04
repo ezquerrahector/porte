@@ -6,6 +6,7 @@ import { uploadPhoto } from '../lib/photos';
 import { suggestPrice } from '../lib/pricing';
 import { CONDITIONS, money, daysSince, categoryLabel } from '../lib/labels';
 import { usePhotoUrls, Ph } from '../lib/Photo';
+import { SkeletonGrid, SkeletonRows } from '../lib/ui';
 
 function PickGarment() {
   const [items, setItems] = useState(null);
@@ -45,7 +46,7 @@ function PickGarment() {
         </div>
       )}
       <span className="eyebrow">De tu clóset · primero lo que menos usas</span>
-      {!items && <div className="loading">Cargando…</div>}
+      {!items && <SkeletonGrid />}
       {items?.length === 0 && (
         <div className="empty">No tienes prendas disponibles. <Link to="/closet/nueva">Agrega una a tu clóset</Link> para poder venderla.</div>
       )}
@@ -81,7 +82,7 @@ function SellForm({ garmentId }) {
     supabase.from('garments').select('*').eq('id', garmentId).single().then(({ data }) => setG(data));
   }, [garmentId]);
   const urls = usePhotoUrls([g?.photo_path]);
-  if (!g) return <main className="screen"><div className="loading">Cargando…</div></main>;
+  if (!g) return <main className="screen"><SkeletonRows count={1} /></main>;
 
   const sug = suggestPrice(g.category, condition);
   const addFile = (e) => {

@@ -4,6 +4,7 @@ import { supabase } from '../supabase';
 import { useAuth } from '../App';
 import { money, orderStatusLabel } from '../lib/labels';
 import { usePhotoUrls, Ph } from '../lib/Photo';
+import { SkeletonRows } from '../lib/ui';
 
 export default function Orders() {
   const { user } = useAuth();
@@ -25,7 +26,7 @@ export default function Orders() {
         <button className={`chip ${tab === 'compras' ? 'on' : ''}`} onClick={() => setTab('compras')}>Lo que compré</button>
         <button className={`chip ${tab === 'ventas' ? 'on' : ''}`} onClick={() => setTab('ventas')}>Lo que vendí</button>
       </div>
-      {!rows && <div className="loading">Cargando…</div>}
+      {!rows && <SkeletonRows />}
       {rows && shown.length === 0 && <div className="empty">Aún no tienes pedidos aquí.</div>}
       <div>
         {shown.map((o) => (

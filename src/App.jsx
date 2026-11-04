@@ -14,6 +14,8 @@ import OrderDetail from './pages/OrderDetail';
 import Balance from './pages/Balance';
 import Soon from './pages/Soon';
 import Admin from './pages/Admin';
+import BuildOutfit from './pages/BuildOutfit';
+import { ConfirmProvider } from './lib/ui';
 
 const AuthCtx = createContext(null);
 export const useAuth = () => useContext(AuthCtx);
@@ -69,10 +71,12 @@ export default function App() {
   }
   return (
     <AuthCtx.Provider value={ctx}>
+      <ConfirmProvider>
       <div className="app">
         <Routes>
           <Route path="/" element={<Navigate to="/outfits" replace />} />
           <Route path="/outfits" element={<Outfits />} />
+          <Route path="/outfits/armar" element={<BuildOutfit />} />
           <Route path="/closet" element={<Closet />} />
           <Route path="/closet/nueva" element={<GarmentForm />} />
           <Route path="/closet/:id" element={<GarmentForm />} />
@@ -92,6 +96,7 @@ export default function App() {
         </Routes>
         <Tabs />
       </div>
+      </ConfirmProvider>
     </AuthCtx.Provider>
   );
 }

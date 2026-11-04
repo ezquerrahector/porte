@@ -6,6 +6,7 @@ import { uploadPhoto } from '../lib/photos';
 import { studioPhoto, preloadStudio } from '../lib/studio';
 import { usePhotoUrls, Ph } from '../lib/Photo';
 import { CATEGORIES, OCCASIONS, WARMTH, AUDIENCE } from '../lib/labels';
+import { SkeletonDetail, useConfirm } from '../lib/ui';
 
 const EMPTY = { name: '', category: 'arriba', color: '', brand: '', size: '', audience: 'unisex', occasions: [], warmth: 'media', photo_path: null };
 
@@ -13,6 +14,7 @@ export default function GarmentForm() {
   const { id } = useParams();
   const { user } = useAuth();
   const nav = useNavigate();
+  const confirm = useConfirm();
   const [g, setG] = useState(id ? null : EMPTY);
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -28,7 +30,7 @@ export default function GarmentForm() {
   }, [id]);
   const urls = usePhotoUrls([g?.photo_path]);
 
-  if (!g) return <main className="screen"><div className="loading">Cargando…</div></main>;
+  if (!g) return <SkeletonDetail />;
   const set = (k, v) => setG({ ...g, [k]: v });
   const toggleOcc = (o) => set('occasions', g.occasions.includes(o) ? g.occasions.filter((x) => x !== o) : [...g.occasions, o]);
 
@@ -69,7 +71,7 @@ export default function GarmentForm() {
   }
 
   async function archive() {
-    if (!window.confirm('¿Quitar esta prenda de tu clóset?')) return;
+    if (!(await confirm({ title: '¿Quitar esta prenda de tu clóset?', body: 'Dejará de aparecer en tus outfits.', ok: 'Quitar prenda', danger: true }))) return;
     await supabase.from('garments').update({ status: 'archivada' }).eq('id', id);
     nav('/closet', { replace: true });
   }

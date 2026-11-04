@@ -84,3 +84,31 @@ textarea.input{height:auto;min-height:84px;padding:12px 14px}
 
 .studio-working{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(18,17,16,.62);color:#F4EFE8;font-size:11px;letter-spacing:.22em;text-transform:uppercase;border-radius:4px;animation:pulse 1.4s ease-in-out infinite}
 @keyframes pulse{50%{background:rgba(18,17,16,.45)}}
+
+/* Siluetas de carga */
+.skel{border-radius:4px;background:linear-gradient(100deg,#EEEBE6 30%,#F7F5F2 50%,#EEEBE6 70%);background-size:300% 100%;animation:shimmer 1.3s ease-in-out infinite}
+@keyframes shimmer{from{background-position:100% 0}to{background-position:0 0}}
+@media (prefers-reduced-motion: reduce){.skel{animation:none}}
+
+/* Ventana de confirmación inferior */
+.sheet-backdrop{position:fixed;inset:0;background:rgba(18,17,16,.48);display:flex;align-items:flex-end;justify-content:center;z-index:50;animation:fadein .18s ease-out}
+.sheet{width:100%;max-width:520px;background:var(--paper);border-radius:14px 14px 0 0;padding:14px 24px calc(28px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;animation:slideup .22s ease-out}
+.sheet-grip{width:40px;height:4px;border-radius:2px;background:var(--line);align-self:center;margin-bottom:6px}
+.btn.danger{background:var(--accent);border-color:var(--accent)}
+@keyframes fadein{from{opacity:0}}
+@keyframes slideup{from{transform:translateY(40px);opacity:.4}}
+
+/* Filas para armar outfit */
+.pickrail{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 0 6px;scrollbar-width:none}
+.pickrail::-webkit-scrollbar{display:none}
+.pickrail .pick{flex:0 0 96px;scroll-snap-align:start;background:none;border:2px solid transparent;border-radius:6px;padding:0;cursor:pointer;text-align:left}
+.pickrail .pick.on{border-color:var(--ink)}
+.pickrail .pick .ph{border-radius:4px}
+.pickrail .none{flex:0 0 72px;border:1px dashed #CFC8C0;border-radius:6px;background:#fff;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);cursor:pointer}
+.pickrail .none.on{border:2px solid var(--ink);color:var(--ink)}
+
+.heart{position:absolute;right:8px;top:8px;width:36px;height:36px;border-radius:18px;border:0;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.select{height:38px;border:1px solid var(--line);border-radius:19px;padding:0 12px;background:#fff;font-size:13px}
+.stars{display:inline-flex;gap:4px}
+.stars button{background:none;border:0;font-size:28px;line-height:1;color:#CFC8C0;cursor:pointer;min-width:40px;min-height:44px}
+.stars button.on{color:var(--accent)}

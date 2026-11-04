@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../supabase';
 import { CATEGORIES, daysSince } from '../lib/labels';
 import { usePhotoUrls, Ph } from '../lib/Photo';
+import { SkeletonGrid } from '../lib/ui';
 
 export default function Closet() {
   const [items, setItems] = useState(null);
@@ -46,7 +47,7 @@ export default function Closet() {
           <span aria-hidden="true">→</span>
         </Link>
       )}
-      {!items && <div className="loading">Cargando tu clóset…</div>}
+      {!items && <SkeletonGrid count={6} />}
       {items && items.length === 0 && (
         <div className="empty">Tu clóset está vacío. Agrega tu primera prenda con una foto sobre un fondo liso y con buena luz.</div>
       )}

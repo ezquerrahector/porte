@@ -4,24 +4,33 @@ import { supabase } from '../supabase';
 import { useAuth } from '../App';
 import { categoryLabel, conditionLabel, money } from '../lib/labels';
 import { usePhotoUrls, Hanger } from '../lib/Photo';
+import { SkeletonDetail, useConfirm } from '../lib/ui';
+import { Heart, toggleFavorite } from './Shop';
 
 export default function ListingDetail() {
   const { id } = useParams();
   const { user, profile } = useAuth();
   const nav = useNavigate();
+  const confirm = useConfirm();
   const [l, setL] = useState(null);
   const [step, setStep] = useState('ver');
   const [addr, setAddr] = useState('');
   const [phone, setPhone] = useState('');
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(null);
+  const [seller, setSeller] = useState(null);
+  const [fav, setFav] = useState(false);
 
   useEffect(() => {
-    supabase.from('listings').select('*').eq('id', id).single().then(({ data }) => setL(data));
+    supabase.from('listings').select('*').eq('id', id).single().then(({ data }) => {
+      setL(data);
+      if (data) supabase.rpc('seller_summary', { p_seller: data.seller_id }).then(({ data: s }) => setSeller(s?.[0] || null));
+    });
+    supabase.from('favorites').select('listing_id').eq('listing_id', id).then(({ data }) => setFav((data || []).length > 0));
   }, [id]);
   useEffect(() => { if (profile?.phone) setPhone(profile.phone); }, [profile]);
   const urls = usePhotoUrls(l?.photo_paths || []);
-  if (!l) return <main className="screen"><div className="loading">Cargando…</div></main>;
+  if (!l) return <SkeletonDetail />;
 
   const mine = l.seller_id === user.id;
 
@@ -36,7 +45,7 @@ export default function ListingDetail() {
   }
 
   async function withdraw() {
-    if (!window.confirm('¿Retirar esta prenda de la venta? Regresará a tu clóset.')) return;
+    if (!(await confirm({ title: '¿Retirar de la venta?', body: 'La prenda regresará a tu clóset.', ok: 'Retirar', danger: true }))) return;
     await supabase.from('listings').update({ status: 'cancelada' }).eq('id', l.id);
     if (l.garment_id) await supabase.from('garments').update({ status: 'activa' }).eq('id', l.garment_id);
     nav('/bazar/vender', { replace: true });
@@ -44,6 +53,7 @@ export default function ListingDetail() {
 
   return (
     <main className="screen stack">
+      <div style={{ position: 'relative' }}>
       <div className="sheet-photo" style={{ display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory', position: 'relative' }}>
         {l.photo_paths.length === 0 && <div style={{ margin: 'auto' }}><Hanger /></div>}
         {l.photo_paths.map((p) => (
@@ -52,10 +62,12 @@ export default function ListingDetail() {
           </div>
         ))}
       </div>
+      {!mine && <div style={{ position: 'absolute', right: -4, top: 'calc(env(safe-area-inset-top) + 0px)' }}><Heart on={fav} onClick={async () => { const was = fav; setFav(!was); const { error } = await toggleFavorite(l.id, was); if (error) setFav(was); }} /></div>}
+      </div>
       <Link to="/bazar" className="back">← Bazar</Link>
       <div className="between">
         <h1 className="h1" style={{ fontSize: 28 }}>{l.title}</h1>
-        <span style={{ fontSize: 22, fontWeight: 600 }}>{money(l.price)}</span>
+        <span style={{ fontFamily: 'var(--serif)', fontSize: 26 }}>{money(l.price)}</span>
       </div>
       <span className="small muted">
         {[categoryLabel(l.category), l.size && `Talla ${l.size}`, conditionLabel(l.condition), l.color, l.brand].filter(Boolean).join(' · ')}
@@ -63,7 +75,8 @@ export default function ListingDetail() {
       {l.description && <p style={{ margin: 0, lineHeight: 1.55 }}>{l.description}</p>}
       <div style={{ borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', padding: '8px 0' }}>
         <div className="kv"><span>Defectos</span><span>{l.defects || 'Ninguno reportado'}</span></div>
-        <div className="kv"><span>Vendedor</span><span>Comunidad Porte · León</span></div>
+        <div className="kv"><span>Vendedor</span><span>{seller ? `${seller.display_name}${seller.zone ? ' · ' + seller.zone : ''}` : 'Comunidad Porte · León'}</span></div>
+        <div className="kv"><span>Reputación</span><span>{seller?.reviews ? `★ ${Number(seller.rating).toFixed(1)} (${seller.reviews}) · ${seller.sales} ${seller.sales === 1 ? 'venta' : 'ventas'}` : seller?.sales ? `${seller.sales} ${seller.sales === 1 ? 'venta' : 'ventas'} · sin calificaciones aún` : 'Nuevo en Porte'}</span></div>
         <div className="kv"><span>Envío a tu domicilio</span><span>Por definir</span></div>
         <div className="kv"><span>Revisión al recibir</span><span>48 horas</span></div>
       </div>

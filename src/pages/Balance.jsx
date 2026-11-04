@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../supabase';
 import { useAuth } from '../App';
 import { money, orderStatusLabel } from '../lib/labels';
+import { SkeletonRows } from '../lib/ui';
 
 export default function Balance() {
   const { user, profile, setProfile } = useAuth();
@@ -43,7 +44,7 @@ export default function Balance() {
       </div>
 
       <div className="between"><span style={{ fontWeight: 600 }}>Mis ventas</span><Link to="/pedidos" className="small">Ver pedidos</Link></div>
-      {!sales && <div className="loading">Cargando…</div>}
+      {!sales && <SkeletonRows count={2} />}
       {sales?.length === 0 && <div className="empty">Aún no vendes nada. <Link to="/bazar/vender">Pon en venta</Link> lo que ya no usas.</div>}
       <div>
         {live.map((o) => (
