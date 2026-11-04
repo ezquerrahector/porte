@@ -17,10 +17,12 @@ React + Vite + vite-plugin-pwa · Supabase (Postgres con RLS, Auth, Storage) · 
 
 ## Producción
 
+En línea en **https://portestyle.com** (dominio en Cloudflare, publicado con GitHub Pages).
+
 Cada push a `main` publica automáticamente. Las migraciones de base de datos están en `supabase/migrations/`.
 
 ```bash
 npm install
 npm run dev     # local
-npm run build   # build de producción (BASE_PATH=/porte/ para GitHub Pages)
+npm run build   # build de producción
 ```
